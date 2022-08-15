@@ -8,12 +8,14 @@ registerProcessor(
     _volume;
     _updateIntervalInMS;
     _nextUpdateFrame;
+    _currentTime;
 
     constructor() {
       super();
       this._volume = 0;
       this._updateIntervalInMS = 25;
       this._nextUpdateFrame = this._updateIntervalInMS;
+      this._currentTime = 0;
       this.port.onmessage = (event) => {
         if (event.data.updateIntervalInMS) {
           this._updateIntervalInMS = event.data.updateIntervalInMS;
@@ -50,7 +52,14 @@ registerProcessor(
         this._nextUpdateFrame -= samples.length;
         if (0 > this._nextUpdateFrame) {
           this._nextUpdateFrame += this.intervalInFrames;
-          this.port.postMessage({ volume: this._volume });
+          // const currentTime = currentTime ;
+          // eslint-disable-next-line no-undef
+          if (!this._currentTime || 0.125 < currentTime - this._currentTime) {
+            // eslint-disable-next-line no-undef
+            this._currentTime = currentTime;
+            // console.log(`currentTime: ${currentTime}`);
+            this.port.postMessage({ volume: this._volume });
+          }
         }
       }
 
